@@ -8,7 +8,7 @@
 #include "graph.h"
 
 const int INTENSITIES_RANGE = 256;
-const int SIGMA = 15;
+const int SIGMA = 20;
 const double LAMBDA = 0.3;
 
 typedef Graph<double, double, double> GraphD;

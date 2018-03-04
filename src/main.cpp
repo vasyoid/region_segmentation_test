@@ -9,10 +9,10 @@
  */
 int main(int argc, char **argv) {
     if (argc != 4) {
-        std::cout << "usage:\n./region_segmentation_test image_file_name mask_file_name output_file_name" << std::endl;
+        std::cout << "usage:\n./run image_file_name mask_file_name output_file_name" << std::endl;
         return -1;
     }
-    cv::Mat image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
+    cv::Mat image = cv::imread(argv[1], cv::IMREAD_COLOR);
     cv::Mat mask = cv::imread(argv[2], cv::IMREAD_COLOR);
     if (image.empty() || mask.empty()) {
         std::cerr << "could not open input files" << std::endl;
@@ -22,7 +22,8 @@ int main(int argc, char **argv) {
     GraphD graph(static_cast<int>(nodes.size()), static_cast<int>(nodes.size() * 3));
     build_graph(image, mask, graph, nodes);
     graph.maxflow();
-    segment(image, graph, nodes);
-    cv::imwrite(argv[3], image);
+    cv::Mat output(image.rows, image.cols, CV_8UC1);
+    segment(output, graph, nodes);
+    cv::imwrite(argv[3], output);
     return 0;
 }

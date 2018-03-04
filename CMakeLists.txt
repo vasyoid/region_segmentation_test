@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(include)
 include_directories(bk_maxflow)
 
-add_executable(region_segmentation_test
+add_executable(run
         src/main.cpp
         src/utils.cpp
         bk_maxflow/graph.cpp
@@ -15,4 +15,4 @@ add_executable(region_segmentation_test
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
-target_link_libraries(region_segmentation_test ${OpenCV_LIBS})
+target_link_libraries(run ${OpenCV_LIBS})
