@@ -52,8 +52,9 @@ static double dist(const cv::Vec3b &vec1, const cv::Vec3b &vec2) {
  * @return the cost of the edge.
  */
 static double count_cost(const cv::Vec3b &color1, const cv::Vec3b &color2) {
-    double diff = SIGMA - std::abs(dist(color1, color2) / 20);
-    return std::exp(std::abs(diff)) * (diff < 0 ? -1 : 1);
+    double diff = (SIGMA - dist(color1, color2)) / DELTA;
+    return diff;
+//    return std::exp(diff);
 }
 
 /**
