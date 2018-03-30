@@ -22,8 +22,8 @@ int main(int argc, char **argv) {
     GraphD graph(static_cast<int>(nodes.size()), static_cast<int>(nodes.size() * 3));
     build_graph(image, mask, graph, nodes);
     graph.maxflow();
-    cv::Mat output(image.rows, image.cols, CV_8UC1);
-    segment(output, graph, nodes);
-    cv::imwrite(argv[3], output);
+    segment(image, graph, nodes);
+    //segment_new(image, graph, nodes);
+    cv::imwrite(argv[3], image);
     return 0;
 }

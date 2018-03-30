@@ -53,8 +53,7 @@ static double dist(const cv::Vec3b &vec1, const cv::Vec3b &vec2) {
  */
 static double count_cost(const cv::Vec3b &color1, const cv::Vec3b &color2) {
     double diff = (SIGMA - dist(color1, color2)) / DELTA;
-    return diff;
-//    return std::exp(diff);
+    return std::exp(diff);
 }
 
 /**
@@ -155,10 +154,23 @@ void build_graph(cv::Mat &image, cv::Mat &mask, GraphD &graph, std::vector<Graph
 void segment(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
     for (int row = 0; row < image.rows; ++row) {
         for (int col = 0; col < image.cols; ++col) {
-            if (graph.what_segment(nodes[row * image.cols + col]) == GraphD::SOURCE) {
-                image.at<uchar>(row, col) = 255;
-            } else {
-                image.at<uchar>(row, col) = 0;
+            if (graph.what_segment(nodes[row * image.cols + col]) == GraphD::SINK) {
+                image.at<cv::Vec3b>(row, col) = {0, 0, 0};
+            }
+        }
+    }
+}
+
+void segment_new(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
+    for (int row = 0; row < image.rows; ++row) {
+        for (int col = 0; col < image.cols; ++col) {
+            for (int i = std::max(0, row - 2); i <= std::min(image.rows - 1, row + 2); i++) {
+                for (int j = std::max(0, col - 2); j <= std::min(image.cols - 1, col + 2); j++) {
+                    if (graph.what_segment(nodes[row * image.cols + col]) !=
+                            graph.what_segment(nodes[i * image.cols + j])) {
+                        image.at<cv::Vec3b>(row, col) = {255, 0, 255};
+                    }
+                }
             }
         }
     }
