@@ -93,25 +93,34 @@ void build_graph(cv::Mat &image, cv::Mat &mask, GraphD &graph, std::vector<Graph
     }
 }
 
-/**
- * Rebuild and image according to its graph min-cut.
- * @param image image to rebuild.
- * @param graph graph with nodes belonging to one of the terminal node's components.
- * @param nodes node ids.
- */
-void segment(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
-    for (int row = 0; row < image.rows; ++row) {
-        for (int col = 0; col < image.cols; ++col) {
-            if (graph.what_segment(nodes[row * image.cols + col]) == GraphD::SINK) {
-                image.at<cv::Vec3b>(row, col) = {0, 0, 0};
+void go(cv::Mat &mask, int fst_row, int fst_col, int color) {
+    std::vector<std::pair<int, int>> stack;
+    stack.emplace_back(std::make_pair(fst_row, fst_col));
+    while (!stack.empty()) {
+        auto cur = stack.back();
+        stack.pop_back();
+        int row = cur.first;
+        int col = cur.second;
+        if (row < 0 || col < 0 || row >= mask.rows || col >= mask.cols) {
+            continue;
+        }
+        auto current = mask.at<uchar>(row, col);
+        if (current < 2 || current != color) {
+            continue;
+        }
+        mask.at<uchar>(row, col) -= 2;
+        for (int i = row - 1; i < row + 2; ++i) {
+            for (int j = col - 1; j < col + 2; ++j) {
+                stack.emplace_back(std::make_pair(i, j));
             }
         }
     }
 }
 
-cv::Mat getMask(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
+void get_mask(cv::Mat &image, cv::Mat &old_mask, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
     cv::Mat mask;
     mask.create(image.rows, image.cols, CV_8UC1);
+    int obj_row = 0, obj_col = 0, bgr_row = 1, bgr_col = 1;
     for (int row = 0; row < image.rows; ++row) {
         for (int col = 0; col < image.cols; ++col) {
             if (graph.what_segment(nodes[row * image.cols + col]) == GraphD::SOURCE) {
@@ -119,21 +128,41 @@ cv::Mat getMask(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nod
             } else {
                 mask.at<uchar>(row, col) = 0;
             }
+            if (old_mask.at<uchar>(row, col) == 1) {
+                obj_row = row;
+                obj_col = col;
+            } else if (old_mask.at<uchar>(row, col) == 2) {
+                bgr_row = row;
+                bgr_col = col;
+            }
         }
     }
-    return mask;
+//    go(mask, bgr_row, bgr_col, 2);
+//    go(mask, obj_row, obj_col, 3);
+//    for (int row = 0; row < image.rows; ++row) {
+//        for (int col = 0; col < image.cols; ++col) {
+//            if (mask.at<uchar>(row, col) > 1) {
+//                mask.at<uchar>(row, col) = 3 - mask.at<uchar>(row, col);
+//                uchar res = mask.at<uchar>(row, col);
+//                assert(res == 0 || res == 1);
+//            }
+//        }
+//    }
+    mask.copyTo(old_mask);
 }
 
-void segment_new(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
+/**
+ * Rebuild and image according to its graph min-cut.
+ * @param image image to rebuild.
+ * @param graph graph with nodes belonging to one of the terminal node's components.
+ * @param nodes node ids.
+ */
+void segment(cv::Mat &image, cv::Mat &mask, GraphD &graph, std::vector<GraphD::node_id> &nodes) {
+    get_mask(image, mask, graph, nodes);
     for (int row = 0; row < image.rows; ++row) {
         for (int col = 0; col < image.cols; ++col) {
-            for (int i = std::max(0, row - 2); i <= std::min(image.rows - 1, row + 2); i++) {
-                for (int j = std::max(0, col - 2); j <= std::min(image.cols - 1, col + 2); j++) {
-                    if (graph.what_segment(nodes[row * image.cols + col]) !=
-                            graph.what_segment(nodes[i * image.cols + j])) {
-                        image.at<cv::Vec3b>(row, col) = {255, 0, 255};
-                    }
-                }
+            if (mask.at<uchar>(row, col) == 0) {
+                image.at<cv::Vec3b>(row, col) = {0, 0, 0};
             }
         }
     }

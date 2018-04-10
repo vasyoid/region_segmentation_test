@@ -15,7 +15,6 @@ const double LAMBDA = 0.3;
 typedef Graph<double, double, double> GraphD;
 
 void build_graph(cv::Mat &image, cv::Mat &mask, GraphD &graph, std::vector<GraphD::node_id> &nodes);
-void segment(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes);
+void segment(cv::Mat &image, cv::Mat &mask, GraphD &graph, std::vector<GraphD::node_id> &nodes);
 void segment_new(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes);
-cv::Mat getMask(cv::Mat &image, GraphD &graph, std::vector<GraphD::node_id> &nodes);
 #endif

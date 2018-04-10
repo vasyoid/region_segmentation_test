@@ -12,6 +12,6 @@ cv::Mat cut(cv::Mat &image, cv::Mat mask) {
     GraphD graph(static_cast<int>(nodes.size()), static_cast<int>(nodes.size() * 3));
     build_graph(image, mask, graph, nodes);
     graph.maxflow();
-    segment(image, graph, nodes);
-    return getMask(image, graph, nodes);
+    segment(image, mask, graph, nodes);
+    return mask;
 }
