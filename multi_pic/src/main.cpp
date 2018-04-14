@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+#include <queue>
 
 int global_count = 1;
 
@@ -18,6 +19,8 @@ struct Image {
     cv::Mat tmp;
     std::string file;
     double scale_factor = 1;
+
+    Image() { }
 
     Image(const std::string &directory, std::ifstream &input) {
         std::string mask_file;
@@ -79,25 +82,34 @@ struct Image {
         mask = cut(image, mask);
     }
 
-    void inherit_mask(Image img) {
-        mask.create(image.rows, image.cols, CV_8UC1);
-        cv::Mat tmp;
-        image.copyTo(tmp);
+    static void update_points(Image img) {
         for (auto &p : img.points) {
             if (points_segmentation.count(p.first) == 0) {
-                points_segmentation[p.first] = img.mask.at<uchar>(p.second * scale_factor);
+                points_segmentation[p.first] = img.mask.at<uchar>(p.second * img.scale_factor);
             }
         }
-        for (auto &p : points_segmentation) {
-            if (points.count(p.first) > 0) {
-                if (p.second) {
-                    mask.at<uchar>(points[p.first] * scale_factor) = 1;
-                    cv::circle(mask, points[p.first] * scale_factor, 5, 1, cv::FILLED);
-                    cv::circle(tmp, points[p.first] * scale_factor, 3, cv::Scalar(0, 0, 255));
+    }
+
+    void inherit_mask() {
+        mask.create(image.rows, image.cols, CV_8UC1);
+        for (int i = 0; i < mask.rows; i++) {
+            for (int j = 0; j < mask.cols; j++) {
+                mask.at<uchar>(i, j) = 0;
+            }
+        }
+        cv::Mat tmp;
+        image.copyTo(tmp);
+        for (auto &p : points) {
+            if (points_segmentation.count(p.first) > 0) {
+                if (points_segmentation[p.first]) {
+                    mask.at<uchar>(p.second * scale_factor) = 1;
+                    cv::circle(tmp, p.second * scale_factor, 2, cv::Scalar(0, 0, 255));
                 } else {
-                    cv::circle(mask, points[p.first] * scale_factor, 5, 2, cv::FILLED);
-                    cv::circle(tmp, points[p.first] * scale_factor, 3, cv::Scalar(255, 0, 0));
+                    mask.at<uchar>(p.second * scale_factor) = 2;
+                    cv::circle(tmp, p.second * scale_factor, 2, cv::Scalar(255, 0, 0));
                 }
+            } else {
+                cv::circle(tmp, points[p.first] * scale_factor, 2, cv::Scalar(0, 255, 0));
             }
         }
         cv::imshow("inherited mask", tmp);
@@ -140,6 +152,7 @@ struct Image {
         cv::imshow("create mask", image);
         cv::setMouseCallback("create mask", mouseClick, this);
         cv::waitKey();
+        cv::imwrite(std::to_string(global_count++) + ".png", tmp);
         cv::destroyWindow("create mask");
     }
 
@@ -172,27 +185,27 @@ int main(int argc, char **argv) {
     std::string directory = argv[1];
     std::ifstream info(directory + "/info.txt");
     std::cout << directory + "/info.txt" << std::endl;
-    Image image1(directory, info);
-    image1.scale(0.2);
+    Image image1 = Image(directory, info);
     if (image1.empty()) {
         std::cerr << "could not open input files" << std::endl;
         return -1;
     }
+    image1.scale(0.2);
     image1.create_mask();
     image1.segment_next();
     image1.show();
-    while (  info.good()) {
+    while (info.good()) {
         Image image2(directory, info);
         if (image2.empty()) {
             std::cerr << "could not open input files" << std::endl;
             break;
         }
         image2.scale(0.2);
-        image2.inherit_mask(image1);
+        Image::update_points(image1);
+        image2.inherit_mask();
         image2.segment_next();
-        //image2.make_mask_smooth();
         image2.show();
-        std::swap(image1, image2);
+        image1 = image2;
     }
     return 0;
 }
