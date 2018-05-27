@@ -56,6 +56,30 @@ CMAKE_BINARY_DIR = /home/vasyoid/Документы/work/git/segmentation/multi_
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/clion/bin/cmake/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/clion/bin/cmake/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/clion/bin/cmake/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/clion/bin/cmake/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -77,6 +101,28 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/bin/clion/bin/cmake/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/bin/clion/bin/cmake/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,6 +157,45 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named test_hist
+
+# Build rule for target.
+test_hist: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_hist
+.PHONY : test_hist
+
+# fast build rule for target.
+test_hist/fast:
+	$(MAKE) -f CMakeFiles/test_hist.dir/build.make CMakeFiles/test_hist.dir/build
+.PHONY : test_hist/fast
+
+#=============================================================================
+# Target rules for targets named test_shift
+
+# Build rule for target.
+test_shift: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_shift
+.PHONY : test_shift
+
+# fast build rule for target.
+test_shift/fast:
+	$(MAKE) -f CMakeFiles/test_shift.dir/build.make CMakeFiles/test_shift.dir/build
+.PHONY : test_shift/fast
+
+#=============================================================================
+# Target rules for targets named test_wand
+
+# Build rule for target.
+test_wand: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_wand
+.PHONY : test_wand
+
+# fast build rule for target.
+test_wand/fast:
+	$(MAKE) -f CMakeFiles/test_wand.dir/build.make CMakeFiles/test_wand.dir/build
+.PHONY : test_wand/fast
+
+#=============================================================================
 # Target rules for targets named multi_pic
 
 # Build rule for target.
@@ -122,6 +207,97 @@ multi_pic: cmake_check_build_system
 multi_pic/fast:
 	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/build
 .PHONY : multi_pic/fast
+
+#=============================================================================
+# Target rules for targets named edison_gpu
+
+# Build rule for target.
+edison_gpu: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 edison_gpu
+.PHONY : edison_gpu
+
+# fast build rule for target.
+edison_gpu/fast:
+	$(MAKE) -f edison_gpu/CMakeFiles/edison_gpu.dir/build.make edison_gpu/CMakeFiles/edison_gpu.dir/build
+.PHONY : edison_gpu/fast
+
+#=============================================================================
+# Target rules for targets named clew
+
+# Build rule for target.
+clew: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 clew
+.PHONY : clew
+
+# fast build rule for target.
+clew/fast:
+	$(MAKE) -f edison_gpu/thirdparty/clew/src/CMakeFiles/clew.dir/build.make edison_gpu/thirdparty/clew/src/CMakeFiles/clew.dir/build
+.PHONY : clew/fast
+
+#=============================================================================
+# Target rules for targets named clewTestC
+
+# Build rule for target.
+clewTestC: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 clewTestC
+.PHONY : clewTestC
+
+# fast build rule for target.
+clewTestC/fast:
+	$(MAKE) -f edison_gpu/thirdparty/clew/clewTest/CMakeFiles/clewTestC.dir/build.make edison_gpu/thirdparty/clew/clewTest/CMakeFiles/clewTestC.dir/build
+.PHONY : clewTestC/fast
+
+#=============================================================================
+# Target rules for targets named clewTest
+
+# Build rule for target.
+clewTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 clewTest
+.PHONY : clewTest
+
+# fast build rule for target.
+clewTest/fast:
+	$(MAKE) -f edison_gpu/thirdparty/clew/clewTest/CMakeFiles/clewTest.dir/build.make edison_gpu/thirdparty/clew/clewTest/CMakeFiles/clewTest.dir/build
+.PHONY : clewTest/fast
+
+#=============================================================================
+# Target rules for targets named hexdumparray
+
+# Build rule for target.
+hexdumparray: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 hexdumparray
+.PHONY : hexdumparray
+
+# fast build rule for target.
+hexdumparray/fast:
+	$(MAKE) -f edison_gpu/thirdparty/cl_utils/CMakeFiles/hexdumparray.dir/build.make edison_gpu/thirdparty/cl_utils/CMakeFiles/hexdumparray.dir/build
+.PHONY : hexdumparray/fast
+
+#=============================================================================
+# Target rules for targets named cl_utils
+
+# Build rule for target.
+cl_utils: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cl_utils
+.PHONY : cl_utils
+
+# fast build rule for target.
+cl_utils/fast:
+	$(MAKE) -f edison_gpu/thirdparty/cl_utils/CMakeFiles/cl_utils.dir/build.make edison_gpu/thirdparty/cl_utils/CMakeFiles/cl_utils.dir/build
+.PHONY : cl_utils/fast
+
+#=============================================================================
+# Target rules for targets named cimg
+
+# Build rule for target.
+cimg: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 cimg
+.PHONY : cimg
+
+# fast build rule for target.
+cimg/fast:
+	$(MAKE) -f edison_gpu/thirdparty/cimg/CMakeFiles/cimg.dir/build.make edison_gpu/thirdparty/cimg/CMakeFiles/cimg.dir/build
+.PHONY : cimg/fast
 
 bk_maxflow/graph.o: bk_maxflow/graph.cpp.o
 
@@ -231,6 +407,60 @@ src/grabcut.cpp.s:
 	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/grabcut.cpp.s
 .PHONY : src/grabcut.cpp.s
 
+src/hist.o: src/hist.cpp.o
+
+.PHONY : src/hist.o
+
+# target to build an object file
+src/hist.cpp.o:
+	$(MAKE) -f CMakeFiles/test_hist.dir/build.make CMakeFiles/test_hist.dir/src/hist.cpp.o
+.PHONY : src/hist.cpp.o
+
+src/hist.i: src/hist.cpp.i
+
+.PHONY : src/hist.i
+
+# target to preprocess a source file
+src/hist.cpp.i:
+	$(MAKE) -f CMakeFiles/test_hist.dir/build.make CMakeFiles/test_hist.dir/src/hist.cpp.i
+.PHONY : src/hist.cpp.i
+
+src/hist.s: src/hist.cpp.s
+
+.PHONY : src/hist.s
+
+# target to generate assembly for a file
+src/hist.cpp.s:
+	$(MAKE) -f CMakeFiles/test_hist.dir/build.make CMakeFiles/test_hist.dir/src/hist.cpp.s
+.PHONY : src/hist.cpp.s
+
+src/magic_wand.o: src/magic_wand.cpp.o
+
+.PHONY : src/magic_wand.o
+
+# target to build an object file
+src/magic_wand.cpp.o:
+	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/magic_wand.cpp.o
+.PHONY : src/magic_wand.cpp.o
+
+src/magic_wand.i: src/magic_wand.cpp.i
+
+.PHONY : src/magic_wand.i
+
+# target to preprocess a source file
+src/magic_wand.cpp.i:
+	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/magic_wand.cpp.i
+.PHONY : src/magic_wand.cpp.i
+
+src/magic_wand.s: src/magic_wand.cpp.s
+
+.PHONY : src/magic_wand.s
+
+# target to generate assembly for a file
+src/magic_wand.cpp.s:
+	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/magic_wand.cpp.s
+.PHONY : src/magic_wand.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -258,32 +488,62 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/utils.o: src/utils.cpp.o
+src/shift.o: src/shift.cpp.o
 
-.PHONY : src/utils.o
+.PHONY : src/shift.o
 
 # target to build an object file
-src/utils.cpp.o:
-	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/utils.cpp.o
-.PHONY : src/utils.cpp.o
+src/shift.cpp.o:
+	$(MAKE) -f CMakeFiles/test_shift.dir/build.make CMakeFiles/test_shift.dir/src/shift.cpp.o
+	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/shift.cpp.o
+.PHONY : src/shift.cpp.o
 
-src/utils.i: src/utils.cpp.i
+src/shift.i: src/shift.cpp.i
 
-.PHONY : src/utils.i
+.PHONY : src/shift.i
 
 # target to preprocess a source file
-src/utils.cpp.i:
-	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/utils.cpp.i
-.PHONY : src/utils.cpp.i
+src/shift.cpp.i:
+	$(MAKE) -f CMakeFiles/test_shift.dir/build.make CMakeFiles/test_shift.dir/src/shift.cpp.i
+	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/shift.cpp.i
+.PHONY : src/shift.cpp.i
 
-src/utils.s: src/utils.cpp.s
+src/shift.s: src/shift.cpp.s
 
-.PHONY : src/utils.s
+.PHONY : src/shift.s
 
 # target to generate assembly for a file
-src/utils.cpp.s:
-	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/utils.cpp.s
-.PHONY : src/utils.cpp.s
+src/shift.cpp.s:
+	$(MAKE) -f CMakeFiles/test_shift.dir/build.make CMakeFiles/test_shift.dir/src/shift.cpp.s
+	$(MAKE) -f CMakeFiles/multi_pic.dir/build.make CMakeFiles/multi_pic.dir/src/shift.cpp.s
+.PHONY : src/shift.cpp.s
+
+src/test_wand.o: src/test_wand.cpp.o
+
+.PHONY : src/test_wand.o
+
+# target to build an object file
+src/test_wand.cpp.o:
+	$(MAKE) -f CMakeFiles/test_wand.dir/build.make CMakeFiles/test_wand.dir/src/test_wand.cpp.o
+.PHONY : src/test_wand.cpp.o
+
+src/test_wand.i: src/test_wand.cpp.i
+
+.PHONY : src/test_wand.i
+
+# target to preprocess a source file
+src/test_wand.cpp.i:
+	$(MAKE) -f CMakeFiles/test_wand.dir/build.make CMakeFiles/test_wand.dir/src/test_wand.cpp.i
+.PHONY : src/test_wand.cpp.i
+
+src/test_wand.s: src/test_wand.cpp.s
+
+.PHONY : src/test_wand.s
+
+# target to generate assembly for a file
+src/test_wand.cpp.s:
+	$(MAKE) -f CMakeFiles/test_wand.dir/build.make CMakeFiles/test_wand.dir/src/test_wand.cpp.s
+.PHONY : src/test_wand.cpp.s
 
 # Help Target
 help:
@@ -291,9 +551,23 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... install/strip"
+	@echo "... install/local"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... test_hist"
+	@echo "... test_shift"
+	@echo "... install"
+	@echo "... list_install_components"
+	@echo "... test_wand"
 	@echo "... multi_pic"
+	@echo "... edison_gpu"
+	@echo "... clew"
+	@echo "... clewTestC"
+	@echo "... clewTest"
+	@echo "... hexdumparray"
+	@echo "... cl_utils"
+	@echo "... cimg"
 	@echo "... bk_maxflow/graph.o"
 	@echo "... bk_maxflow/graph.i"
 	@echo "... bk_maxflow/graph.s"
@@ -306,12 +580,21 @@ help:
 	@echo "... src/grabcut.o"
 	@echo "... src/grabcut.i"
 	@echo "... src/grabcut.s"
+	@echo "... src/hist.o"
+	@echo "... src/hist.i"
+	@echo "... src/hist.s"
+	@echo "... src/magic_wand.o"
+	@echo "... src/magic_wand.i"
+	@echo "... src/magic_wand.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/utils.o"
-	@echo "... src/utils.i"
-	@echo "... src/utils.s"
+	@echo "... src/shift.o"
+	@echo "... src/shift.i"
+	@echo "... src/shift.s"
+	@echo "... src/test_wand.o"
+	@echo "... src/test_wand.i"
+	@echo "... src/test_wand.s"
 .PHONY : help
 
 

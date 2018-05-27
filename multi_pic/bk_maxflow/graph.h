@@ -34,7 +34,7 @@
 #define ARC_BLOCK_SIZE 1024
 #define NODEPTR_BLOCK_SIZE 128
 
-#define MAX_ARCS_NUMBER 4
+#define MAX_ARCS_NUMBER 8
 
 #define NODE_PTR(node) ((node_st*) (nodes + node))
 #define NODE_ID(node) ((node_id) (node - nodes))
@@ -87,7 +87,7 @@ public:
 	void add_tweights(node_id i, captype cap_source, captype cap_sink);
 
 	/* After the maxflow is computed, this function returns to which
-	   segment the node 'i' belongs (Graph::SOURCE or Graph::SINK) */
+	   grabcut the node 'i' belongs (Graph::SOURCE or Graph::SINK) */
 	termtype what_segment(node_id i);
 
 	/* Computes the maxflow. Can be called only once. */
